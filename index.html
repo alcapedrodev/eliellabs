@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pop-up Yeastar</title>
+  <style>
+    .popup {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+    .popup.show {
+      display: block;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Monitor de Chamadas Yeastar</h1>
+  <button onclick="fetchCallData()">Verificar Chamada</button>
+
+  <div id="callPopup" class="popup">
+    <span class="close-btn" onclick="closePopup()">&times;</span>
+    <h2>Detalhes da Chamada</h2>
+    <p><strong>Protocolo:</strong> <span id="protocol"></span></p>
+    <p><strong>Nome:</strong> <span id="name"></span></p>
+    <p><strong>Número:</strong> <span id="number"></span></p>
+    <p><strong>Ramal:</strong> <span id="extension"></span></p>
+  </div>
+
+  <script>
+    const YEASTAR_API_URL = 'https://104.234.90.253:8088/api/v2.0.0/call/status';
+    const API_USERNAME = '8ntM9yA3zo1mUST9qoS48ff7romh6aKt';
+    const API_PASSWORD = 'TqG50tx0sPij6p80xklFnvghYholNacA';
+
+    async function fetchCallData() {
+      try {
+        const response = await fetch(YEASTAR_API_URL, {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Basic ' + btoa(API_USERNAME + ':' + API_PASSWORD),
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) throw new Error('Erro na API: ' + response.status);
+
+        const data = await response.json();
+        const call = data.calls && data.calls[0];
+
+        if (call) {
+          document.getElementById('protocol').textContent = Date.now();
+          document.getElementById('name').textContent = call.name || 'Desconhecido';
+          document.getElementById('number').textContent = call.caller || 'N/A';
+          document.getElementById('extension').textContent = call.extension || 'N/A';
+          showPopup();
+        } else {
+          alert('Nenhuma chamada ativa encontrada.');
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha ao conectar com a API do Yeastar.');
+      }
+    }
+
+    function showPopup() {
+      document.getElementById('callPopup').classList.add('show');
+    }
+
+    function closePopup() {
+      document.getElementById('callPopup').classList.remove('show');
+    }
+  </script>
+</body>
+</html>
