@@ -7,110 +7,105 @@
   <style>
     body {
       margin: 0;
+      background: linear-gradient(135deg, #008080, #0050c0);
       height: 100vh;
-      background: linear-gradient(to bottom, #00a4a5, #0083a3);
-      font-family: Arial, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
     }
 
     .popup {
-      background-color: #fff;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      background-color: white;
+      border-radius: 12px;
       padding: 30px 20px;
-      width: 300px;
-      max-width: 90%;
+      width: 320px;
       text-align: center;
-      animation: fadeIn 0.6s ease-in-out;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: fadeIn 0.6s ease-out;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
-    .popup img {
-      max-width: 120px;
-      margin-bottom: 15px;
+    .logo {
+      width: 120px;
+      margin-bottom: 20px;
     }
 
     h1 {
+      margin: 0;
+      color: #333;
       font-size: 20px;
-      margin: 10px 0;
-      color: #005b75;
     }
 
     .protocolo {
+      margin-top: 15px;
       font-size: 18px;
+      color: teal;
       font-weight: bold;
-      color: #00796b;
-      margin: 15px 0;
     }
 
-    button {
-      padding: 10px 16px;
-      font-size: 14px;
-      background-color: #00a4a5;
+    .copiar-btn {
+      margin-top: 20px;
+      background-color: #008080;
       color: white;
       border: none;
-      border-radius: 8px;
+      padding: 10px 18px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background 0.3s;
+      font-size: 14px;
     }
 
-    button:hover {
-      background-color: #00796b;
+    .copiar-btn:hover {
+      background-color: #006666;
     }
 
     .copiado {
       margin-top: 10px;
       font-size: 13px;
-      color: #00a4a5;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .copiado.show {
-      display: block;
-      opacity: 1;
+      color: green;
     }
   </style>
 </head>
 <body>
   <div class="popup">
-    <img src="https://i.imgur.com/tplvExY.png" alt="Logo Alca2C" />
+    <img src="alca2cpng.png" alt="Logo Alca2C" class="logo">
     <h1>Protocolo Gerado</h1>
     <div class="protocolo" id="protocolo">Carregando...</div>
-    <button onclick="copiarProtocolo()">Copiar Protocolo</button>
-    <div class="copiado" id="copiado">Protocolo copiado!</div>
+    <button class="copiar-btn" onclick="copiarProtocolo()">Copiar Protocolo</button>
+    <div class="copiado" id="copiado" style="display: none;">Protocolo copiado!</div>
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const params = new URLSearchParams(window.location.search);
-      const caller = params.get("caller") || "0000";
+    const params = new URLSearchParams(window.location.search);
+    const caller = params.get("caller");
 
-      function gerarProtocolo(numero) {
-        const agora = new Date();
-        const data = agora.toISOString().slice(0, 10).replace(/-/g, "");
-        const hora = agora.toTimeString().slice(0, 8).replace(/:/g, "");
-        return `${data}-${hora}-${numero}`;
-      }
+    function gerarProtocolo(numero) {
+      const agora = new Date();
+      const data = agora.toISOString().slice(0, 10).replace(/-/g, "");
+      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, "");
+      return `${data}-${hora}-${numero || "0000"}`;
+    }
 
-      const protocolo = gerarProtocolo(caller);
-      document.getElementById("protocolo").textContent = protocolo;
-    });
+    const protocolo = gerarProtocolo(caller);
+    document.getElementById("protocolo").textContent = protocolo;
 
     function copiarProtocolo() {
-      const texto = document.getElementById("protocolo").textContent;
-      navigator.clipboard.writeText(texto).then(() => {
-        const aviso = document.getElementById("copiado");
-        aviso.classList.add("show");
+      navigator.clipboard.writeText(protocolo).then(() => {
+        const msg = document.getElementById("copiado");
+        msg.style.display = "block";
         setTimeout(() => {
-          aviso.classList.remove("show");
+          msg.style.display = "none";
         }, 2000);
       });
     }
