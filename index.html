@@ -90,7 +90,7 @@
       const agora = new Date();
       const data = agora.toISOString().slice(0, 10).replace(/-/g, '');
       const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');
-      return `${data}-${hora}-${numero | }`;
+      return `${data}-${hora}-${numero | '0000' }`;
     }
 
     const protocolo = gerarProtocolo(caller);
