@@ -2,95 +2,39 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pop-up Yeastar</title>
+  <title>Protocolo da Chamada</title>
   <style>
-    .popup {
-      display: none;
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background-color: #f9f9f9;
-      border: 1px solid #ccc;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      z-index: 1000;
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: #f9f9f9;
+      text-align: center;
     }
-    .popup.show {
-      display: block;
+    h1 {
+      color: #333;
     }
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      cursor: pointer;
+    .protocol {
+      margin-top: 20px;
+      font-size: 24px;
+      color: #2b7a78;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Monitor de Chamadas Yeastar</h1>
-  <button onclick="fetchCallData()">Verificar Chamada</button>
+  <h1>Protocolo Gerado</h1>
+  <div class="protocol" id="protocol"></div>
 
-  <div id="callPopup" class="popup">
-    <span class="close-btn" onclick="closePopup()">&times;</span>
-    <h2>Detalhes da Chamada</h2>
-    <p><strong>Protocolo:</strong> <span id="protocol"></span></p>
-    <p><strong>Nome:</strong> <span id="name"></span></p>
-    <p><strong>Número:</strong> <span id="number"></span></p>
-    <p><strong>Ramal:</strong> <span id="extension"></span></p>
-  </div>
-<script>
-  const YEASTAR_API_URL = 'https://104.234.90.253:8088/api/v2.0.0/call/status';
-  const API_USERNAME = '8ntM9yA3zo1mUST9qoS48ff7romh6aKt';
-  const API_PASSWORD = 'TqG50tx0sPij6p80xklFnvghYholNacA';
-
-  async function fetchCallData() {
-    console.log('Iniciando verificação de chamada...');
-
-    try {
-      const response = await fetch(YEASTAR_API_URL, {
-        method: 'GET',
-        headers: {
-          'Authorization': 'Basic ' + btoa(API_USERNAME + ':' + API_PASSWORD),
-          'Content-Type': 'application/json'
-        }
-      });
-
-      console.log('Resposta recebida:', response);
-
-      if (!response.ok) {
-        console.error('Erro na resposta da API:', response.status);
-        alert('Erro ao consultar API: ' + response.status);
-        return;
-      }
-
-      const data = await response.json();
-      console.log('JSON da API:', data);
-
-      const call = data.calls?.[0]; // Tente data.data?.calls[0] se necessário
-
-      if (call) {
-        document.getElementById('protocol').textContent = Date.now();
-        document.getElementById('name').textContent = call.name || 'Desconhecido';
-        document.getElementById('number').textContent = call.caller || 'N/A';
-        document.getElementById('extension').textContent = call.extension || 'N/A';
-        showPopup();
-      } else {
-        alert('Nenhuma chamada ativa encontrada.');
-      }
-    } catch (error) {
-      console.error('Erro ao tentar se conectar:', error);
-      alert('Falha ao conectar com a API do Yeastar.');
+  <script>
+    function gerarProtocolo() {
+      const agora = new Date();
+      const data = agora.toISOString().slice(0, 10).replace(/-/g, '');
+      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');
+      const aleatorio = Math.floor(1000 + Math.random() * 9000); // 4 dígitos
+      return ${data}-${hora}-${aleatorio};
     }
-  }
 
-  function showPopup() {
-    document.getElementById('callPopup').classList.add('show');
-  }
-
-  function closePopup() {
-    document.getElementById('callPopup').classList.remove('show');
-  }
-</script>
+    document.getElementById('protocol').innerText = gerarProtocolo();
+  </script>
 </body>
 </html>
