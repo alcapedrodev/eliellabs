@@ -44,12 +44,13 @@
       const agora = new Date();
       const data = agora.toISOString().slice(0, 10).replace(/-/g, '');
       const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');
+      const caller = getQueryParam("CallerNumber");        // Ex: 5511987654321
+      const numeroSemDDD = removerDDD(caller);       // Ex: 987654321
+      //const protocolo = gerarProtocolo(numeroSemDDD);
       return `${data}-${hora}-${numeroSemDDD}`;
     }
 
-    const caller = getQueryParam("caller");        // Ex: 5511987654321
-    const numeroSemDDD = removerDDD(caller);       // Ex: 987654321
-    const protocolo = gerarProtocolo(numeroSemDDD);
+   
     document.getElementById('protocol').innerText = protocolo;
   </script>
 </body>
