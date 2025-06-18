@@ -39,27 +39,38 @@
     <p><strong>Número:</strong> <span id="number"></span></p>
     <p><strong>Ramal:</strong> <span id="extension"></span></p>
   </div>
-
-  <script>
-    const YEASTAR_API_URL = 'https://104.234.90.253:8088/api/v2.0.0/call/status';
-    const API_USERNAME = '8ntM9yA3zo1mUST9qoS48ff7romh6aKt';
-    const API_PASSWORD = 'TqG50tx0sPij6p80xklFnvghYholNacA';
-  function generateProtocolNumber() {
-    const now = new Date();
-    const formatted = now.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
-    return 'PROTO-' + formatted;
-  }
+<script>
+  const YEASTAR_API_URL = 'https://104.234.90.253:8088/api/v2.0.0/call/status';
+  const API_USERNAME = '8ntM9yA3zo1mUST9qoS48ff7romh6aKt';
+  const API_PASSWORD = 'TqG50tx0sPij6p80xklFnvghYholNacA';
 
   async function fetchCallData() {
+    console.log('Iniciando verificação de chamada...');
+
     try {
-      const response = await fetch(YEASTAR_API_URL);
-      if (!response.ok) throw new Error('Erro na API: ' + response.status);
-      
+      const response = await fetch(YEASTAR_API_URL, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Basic ' + btoa(API_USERNAME + ':' + API_PASSWORD),
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('Resposta recebida:', response);
+
+      if (!response.ok) {
+        console.error('Erro na resposta da API:', response.status);
+        alert('Erro ao consultar API: ' + response.status);
+        return;
+      }
+
       const data = await response.json();
-      const call = data.calls && data.calls[0];
+      console.log('JSON da API:', data);
+
+      const call = data.calls?.[0]; // Tente data.data?.calls[0] se necessário
 
       if (call) {
-        document.getElementById('protocol').textContent = generateProtocolNumber();
+        document.getElementById('protocol').textContent = Date.now();
         document.getElementById('name').textContent = call.name || 'Desconhecido';
         document.getElementById('number').textContent = call.caller || 'N/A';
         document.getElementById('extension').textContent = call.extension || 'N/A';
@@ -68,7 +79,7 @@
         alert('Nenhuma chamada ativa encontrada.');
       }
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Erro ao tentar se conectar:', error);
       alert('Falha ao conectar com a API do Yeastar.');
     }
   }
