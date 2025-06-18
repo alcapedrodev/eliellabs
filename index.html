@@ -39,7 +39,7 @@
 
   // Obter parâmetro da URL
   const params = new URLSearchParams(window.location.search);
-  const caller = params.get('caller');
+  const numeroSemDDD = callerNumber?.slice(-8) || '00000000';
 
   const protocolo = gerarProtocolo(caller);
   document.getElementById('protocol').innerText = protocolo;
