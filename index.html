@@ -26,15 +26,30 @@
   <div class="protocol" id="protocol"></div>
 
   <script>
-    function gerarProtocolo() {
-      const agora = new Date();
-      const data = agora.toISOString().slice(0, 10).replace(/-/g, '');  // AAAAMMDD
-      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');  // HHMMSS
-      const aleatorio = 1003;
-      return `${data}-${hora}-${aleatorio}`;
+    // Função para capturar parâmetros da URL
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
     }
 
-    const protocolo = gerarProtocolo();
+    function removerDDD(numero) {
+      // Remove DDI (55) e DDD (2 dígitos após o 55)
+      if (numero && numero.length >= 12 && numero.startsWith("55")) {
+        return numero.slice(4); // remove '55' + DDD (2 dígitos)
+      }
+      return numero || "00000000";
+    }
+
+    function gerarProtocolo(numeroSemDDD) {
+      const agora = new Date();
+      const data = agora.toISOString().slice(0, 10).replace(/-/g, '');
+      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');
+      return `${data}-${hora}-${numeroSemDDD}`;
+    }
+
+    const caller = getQueryParam("caller");        // Ex: 5511987654321
+    const numeroSemDDD = removerDDD(caller);       // Ex: 987654321
+    const protocolo = gerarProtocolo(numeroSemDDD);
     document.getElementById('protocol').innerText = protocolo;
   </script>
 </body>
