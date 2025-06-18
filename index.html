@@ -30,16 +30,19 @@
     const agora = new Date();
     const data = agora.toISOString().slice(0, 10).replace(/-/g, ''); // AAAAMMDD
     const hora = agora.toTimeString().slice(0, 8).replace(/:/g, ''); // HHMMSS
-  const formatado = numeroSemDDD.replace(/(\d{4})(\d{4})/, '$1-$2');
-return `${data}-${hora}-${formatado}`;
+
+    const numeroSemDDD = callerNumber?.slice(-8) || '00000000';
+    const formatado = numeroSemDDD.replace(/(\d{4})(\d{4})/, '$1-$2');
+
+    return `${data}-${hora}-${formatado}`;
   }
 
   // Obter parâmetro da URL
   const params = new URLSearchParams(window.location.search);
-  const numeroSemDDD = callerNumber?.slice(-8) || '00000000';
+  const caller = params.get('caller');
 
   const protocolo = gerarProtocolo(caller);
   document.getElementById('protocol').innerText = protocolo;
-  </script>
+</script>
 </body>
 </html>
