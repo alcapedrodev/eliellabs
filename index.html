@@ -25,32 +25,24 @@
   <h1>Protocolo Gerado</h1>
   <div class="protocol" id="protocol"></div>
 
-  <script>
-    // Função para capturar parâmetros da URL
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
+<script>
+  function gerarProtocolo(callerNumber) {
+    const agora = new Date();
+    const data = agora.toISOString().slice(0, 10).replace(/-/g, ''); // AAAAMMDD
+    const hora = agora.toTimeString().slice(0, 8).replace(/:/g, ''); // HHMMSS
 
-    function removerDDD(numero) {
-      // Remove DDI (55) e DDD (2 dígitos após o 55)
-      if (numero && numero.length >= 12 && numero.startsWith("55")) {
-        return numero.slice(4); // remove '55' + DDD (2 dígitos)
-      }
-      return numero || "00000000";
-    }
+    // Remover DDD (assumindo que os dois primeiros dígitos são o DDD)
+    const numeroSemDDD = callerNumber?.slice(-8) || '00000000';
 
-    function gerarProtocolo(numeroSemDDD) {
-      const agora = new Date();
-      const data = agora.toISOString().slice(0, 10).replace(/-/g, '');
-      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');
-      return `${data}-${hora}-${numeroSemDDD}`;
-    }
-     const caller = getQueryParam("CallerNumber");        // Ex: 5511987654321
-      const numeroSemDDD = removerDDD(caller);       // Ex: 987654321
-      const protocolo = gerarProtocolo(numeroSemDDD);
-   
-    document.getElementById('protocol').innerText = protocolo;
+    return `${data}-${hora}-${numeroSemDDD}`;
+  }
+
+  // Obter parâmetro da URL
+  const params = new URLSearchParams(window.location.search);
+  const caller = params.get('caller');
+
+  const protocolo = gerarProtocolo(caller);
+  document.getElementById('protocol').innerText = protocolo;
   </script>
 </body>
 </html>
