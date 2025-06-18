@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Protocolo</title>
   <style>
     body {
@@ -19,25 +19,38 @@
       color: teal;
       margin-top: 20px;
     }
+    .info {
+      font-size: 16px;
+      color: #666;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <h1>Protocolo Gerado</h1>
-  <div class="protocolo" id="protocolo"></div>
+  <div class="protocolo" id="protocolo">Carregando...</div>
+  <div class="info" id="info"></div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const caller = params.get('caller');
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const caller = params.get("caller") || "0000";
+      const name = params.get("name") || "";
 
-    function gerarProtocolo(numero) {
-      const agora = new Date();
-      const data = agora.toISOString().slice(0, 10).replace(/-/g, '');
-      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');
-      return `${data}-${hora}-${numero || '0000'}-0000`;
-    }
+      function gerarProtocolo(numero) {
+        const agora = new Date();
+        const data = agora.toISOString().slice(0, 10).replace(/-/g, "");
+        const hora = agora.toTimeString().slice(0, 8).replace(/:/g, "");
+        return `${data}-${hora}-${numero}-0000`;
+      }
 
-    const protocolo = gerarProtocolo(caller);
-    document.getElementById('protocolo').textContent = protocolo;
+      const protocolo = gerarProtocolo(caller);
+      document.getElementById("protocolo").textContent = protocolo;
+
+      if (name) {
+        document.getElementById("info").textContent = `Chamador: ${name}`;
+      }
+    });
   </script>
 </body>
 </html>
