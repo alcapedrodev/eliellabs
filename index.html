@@ -7,106 +7,98 @@
   <style>
     body {
       margin: 0;
-      background: linear-gradient(135deg, #008080, #0050c0);
       height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #008080, #0052cc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .popup {
       background-color: white;
       border-radius: 12px;
-      padding: 30px 20px;
-      width: 320px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      padding: 30px 40px;
       text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      animation: fadeIn 0.6s ease-out;
+      animation: fadeInUp 0.6s ease-out;
     }
 
-    @keyframes fadeIn {
-      from {
+    @keyframes fadeInUp {
+      0% {
         opacity: 0;
-        transform: scale(0.9);
+        transform: translateY(30px);
       }
-      to {
+      100% {
         opacity: 1;
-        transform: scale(1);
+        transform: translateY(0);
       }
     }
 
-    .logo {
-      width: 140px;
+    .popup img {
+      width: 150px;
       margin-bottom: 20px;
     }
 
-    h1 {
-      margin: 0;
+    h2 {
+      margin-bottom: 10px;
       color: #333;
-      font-size: 20px;
     }
 
     .protocolo {
-      margin-top: 15px;
-      font-size: 18px;
+      font-size: 20px;
       color: teal;
       font-weight: bold;
+      margin-bottom: 20px;
     }
 
-    .copiar-btn {
-      margin-top: 20px;
-      background-color: #008080;
+    .btn-copiar {
+      padding: 10px 20px;
+      background-color: teal;
       color: white;
       border: none;
-      padding: 10px 18px;
       border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
+      transition: background-color 0.3s ease;
     }
 
-    .copiar-btn:hover {
+    .btn-copiar:hover {
       background-color: #006666;
-    }
-
-    .copiado {
-      margin-top: 10px;
-      font-size: 13px;
-      color: green;
     }
   </style>
 </head>
 <body>
   <div class="popup">
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAABWCAYAAAD0MwQ+AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAADNElEQVR42u3csW3jQBiGYfn+eQqxQ/BIuEh7wgD1ACXLp0zZ5slJON6mf4ffPf7vvR/XQ/BcI0AAAAAAAAAAAAAAAAAAAAAAAAAAGDwSVEU0Rc5aybtz3yHznOmzysZz6/u9d14duD6ghsn11Xv1Z/r25Vsf6+f9d/2z3fc+fE2fV7MfeWvcr+sjVqzmevSr0mcxfY+qybz8MRY2iNlz2GxlWv7oD0/k3Vs95fc6PT+KvX5f6Z18y6/sbP6D6+yzyft9jJ0vmbQv3Vm7ZvU5/ZY6vaMefNLfTkZ1/rc/qDWldR3q+vGaq9VL2v6Q/NruvLOyr4XXO2Xl28R7nNHuS4zrU33M23sUf8Nea2tRf0Xv1vvX3lP+lb9qYbfquX/g+vN5aun+sf9vV99//+//LrfblzEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMALvgGH2Acg3gv89BoAAAAASUVORK5CYII=" alt="Logo Alca2C" class="logo" />
-    <h1>Protocolo Gerado</h1>
-    <div class="protocolo" id="protocolo">Carregando...</div>
-    <button class="copiar-btn" onclick="copiarProtocolo()">Copiar Protocolo</button>
-    <div class="copiado" id="copiado" style="display: none;">Protocolo copiado!</div>
+    <img src="https://alca2cx.com.br/wp-content/uploads/2022/09/logo-alca2c-branca.png" alt="Logo Alca2C" />
+    <h2>Protocolo Gerado</h2>
+    <div class="protocolo" id="protocolo"></div>
+    <button class="btn-copiar" onclick="copiarProtocolo()">Copiar Protocolo</button>
   </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const caller = params.get("caller");
+    const caller = params.get('caller');
 
     function gerarProtocolo(numero) {
       const agora = new Date();
-      const data = agora.toISOString().slice(0, 10).replace(/-/g, "");
-      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, "");
+      const data = agora.toISOString().slice(0, 10).replace(/-/g, '');
+      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');
       return `${data}-${hora}${numero ? '-' + numero : ''}`;
     }
 
     const protocolo = gerarProtocolo(caller);
-    document.getElementById("protocolo").textContent = protocolo;
+    const protocoloEl = document.getElementById('protocolo');
+    protocoloEl.textContent = protocolo;
 
     function copiarProtocolo() {
-      navigator.clipboard.writeText(protocolo).then(() => {
-        const msg = document.getElementById("copiado");
-        msg.style.display = "block";
-        setTimeout(() => {
-          msg.style.display = "none";
-        }, 2000);
-      });
+      navigator.clipboard.writeText(protocolo)
+        .then(() => {
+          alert("Protocolo copiado com sucesso!");
+        })
+        .catch(err => {
+          alert("Erro ao copiar o protocolo: " + err);
+        });
     }
   </script>
 </body>
