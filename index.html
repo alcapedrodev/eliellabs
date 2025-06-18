@@ -38,20 +38,24 @@
       return urlParams.get(nome) || 'desconhecido';
     }
 
-    function gerarProtocolo(ramal) {
+    // Gera número aleatório de 4 dígitos (tipo ramal)
+    function gerarRamalAleatorio() {
+      return Math.floor(1000 + Math.random() * 9000);
+    }
+
+    function gerarProtocolo() {
       const agora = new Date();
       const data = agora.toISOString().slice(0, 10).replace(/-/g, '');
       const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');
-      return ${data}-${hora}-${ramal};
+      const ramal = gerarRamalAleatorio();
+      return { protocolo: ${data}-${hora}-${ramal}, ramal };
     }
 
     const caller = getParametro('caller');
-    const ext = getParametro('ext');
+    const resultado = gerarProtocolo();
 
-    const protocolo = gerarProtocolo(ext);
-
-    document.getElementById('protocol').innerText = protocolo;
-    document.getElementById('details').innerText = Origem: ${caller} | Ramal: ${ext};
+    document.getElementById('protocol').innerText = resultado.protocolo;
+    document.getElementById('details').innerText = Origem: ${caller} | Ramal: ${resultado.ramal};
   </script>
 </body>
 </html>
