@@ -19,43 +19,23 @@
       color: #2b7a78;
       font-weight: bold;
     }
-    .details {
-      margin-top: 10px;
-      font-size: 18px;
-      color: #666;
-    }
   </style>
 </head>
 <body>
   <h1>Protocolo Gerado</h1>
   <div class="protocol" id="protocol"></div>
-  <div class="details" id="details"></div>
 
   <script>
-    // Função para extrair parâmetros da URL
-    function getParametro(nome) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(nome) || 'desconhecido';
-    }
-
-    // Gera número aleatório de 4 dígitos (tipo ramal)
-    function gerarRamalAleatorio() {
-      return Math.floor(1000 + Math.random() * 9000);
-    }
-
     function gerarProtocolo() {
       const agora = new Date();
-      const data = agora.toISOString().slice(0, 10).replace(/-/g, '');
-      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');
-      const ramal = gerarRamalAleatorio();
-      return { protocolo: ${data}-${hora}-${ramal}, ramal };
+      const data = agora.toISOString().slice(0, 10).replace(/-/g, '');  // AAAAMMDD
+      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');  // HHMMSS
+      const aleatorio = Math.floor(1000 + Math.random() * 9000);       // 4 dígitos aleatórios
+      return ${data}-${hora}-${aleatorio};
     }
 
-    const caller = getParametro('caller');
-    const resultado = gerarProtocolo();
-
-    document.getElementById('protocol').innerText = resultado.protocolo;
-    document.getElementById('details').innerText = Origem: ${caller} | Ramal: ${resultado.ramal};
+    const protocolo = gerarProtocolo();
+    document.getElementById('protocol').innerText = protocolo;
   </script>
 </body>
 </html>
