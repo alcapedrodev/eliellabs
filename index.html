@@ -1,102 +1,119 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Protocolo Alca2C</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Protocolo</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #007c8c, #0051ba);
       height: 100vh;
+      background: linear-gradient(to bottom, #00a4a5, #0083a3);
+      font-family: Arial, sans-serif;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
 
     .popup {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 20px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      padding: 30px 20px;
+      width: 300px;
+      max-width: 90%;
       text-align: center;
-      animation: fadeIn 0.5s ease;
+      animation: fadeIn 0.6s ease-in-out;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    button {
-      margin-top: 15px;
-      background: #007c8c;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
+    .popup img {
+      max-width: 120px;
+      margin-bottom: 15px;
     }
 
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #007c8c;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 10px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 9999;
-    }
-
-    .toast.show {
-      opacity: 1;
+    h1 {
+      font-size: 20px;
+      margin: 10px 0;
+      color: #005b75;
     }
 
     .protocolo {
+      font-size: 18px;
       font-weight: bold;
-      color: #007c8c;
+      color: #00796b;
+      margin: 15px 0;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 14px;
+      background-color: #00a4a5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #00796b;
+    }
+
+    .copiado {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #00a4a5;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .copiado.show {
+      display: block;
+      opacity: 1;
     }
   </style>
 </head>
 <body>
   <div class="popup">
-    <img src="logo.png" alt="Logo Alca2C" width="150"><br><br>
-    <h2>Protocolo Gerado</h2>
-    <div class="protocolo" id="protocolo"></div>
+    <img src="https://i.imgur.com/tplvExY.png" alt="Logo Alca2C" />
+    <h1>Protocolo Gerado</h1>
+    <div class="protocolo" id="protocolo">Carregando...</div>
     <button onclick="copiarProtocolo()">Copiar Protocolo</button>
+    <div class="copiado" id="copiado">Protocolo copiado!</div>
   </div>
 
-  <div id="toast" class="toast"></div>
-
   <script>
-    const gerarProtocolo = () => {
-      const now = new Date();
-      const protocolo = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}-${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}${now.getSeconds().toString().padStart(2,'0')}`;
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const caller = params.get("caller") || "0000";
+
+      function gerarProtocolo(numero) {
+        const agora = new Date();
+        const data = agora.toISOString().slice(0, 10).replace(/-/g, "");
+        const hora = agora.toTimeString().slice(0, 8).replace(/:/g, "");
+        return `${data}-${hora}-${numero}`;
+      }
+
+      const protocolo = gerarProtocolo(caller);
       document.getElementById("protocolo").textContent = protocolo;
-      return protocolo;
-    };
+    });
 
-    const copiarProtocolo = () => {
-      const protocolo = document.getElementById("protocolo").textContent;
-      navigator.clipboard.writeText(protocolo).then(() => {
-        mostrarToast(`Protocolo copiado: ${protocolo}`);
+    function copiarProtocolo() {
+      const texto = document.getElementById("protocolo").textContent;
+      navigator.clipboard.writeText(texto).then(() => {
+        const aviso = document.getElementById("copiado");
+        aviso.classList.add("show");
+        setTimeout(() => {
+          aviso.classList.remove("show");
+        }, 2000);
       });
-    };
-
-    const mostrarToast = (mensagem) => {
-      const toast = document.getElementById("toast");
-      toast.textContent = mensagem;
-      toast.classList.add("show");
-
-      setTimeout(() => {
-        toast.classList.remove("show");
-      }, 3000);
-    };
-
-    gerarProtocolo();
+    }
   </script>
 </body>
 </html>
