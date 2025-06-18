@@ -44,44 +44,42 @@
     const YEASTAR_API_URL = 'https://104.234.90.253:8088/api/v2.0.0/call/status';
     const API_USERNAME = '8ntM9yA3zo1mUST9qoS48ff7romh6aKt';
     const API_PASSWORD = 'TqG50tx0sPij6p80xklFnvghYholNacA';
+  function generateProtocolNumber() {
+    const now = new Date();
+    const formatted = now.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
+    return 'PROTO-' + formatted;
+  }
 
-    async function fetchCallData() {
-      try {
-        const response = await fetch(YEASTAR_API_URL, {
-          method: 'GET',
-          headers: {
-            'Authorization': 'Basic ' + btoa(API_USERNAME + ':' + API_PASSWORD),
-            'Content-Type': 'application/json'
-          }
-        });
+  async function fetchCallData() {
+    try {
+      const response = await fetch(YEASTAR_API_URL);
+      if (!response.ok) throw new Error('Erro na API: ' + response.status);
+      
+      const data = await response.json();
+      const call = data.calls && data.calls[0];
 
-        if (!response.ok) throw new Error('Erro na API: ' + response.status);
-
-        const data = await response.json();
-        const call = data.calls && data.calls[0];
-
-        if (call) {
-          document.getElementById('protocol').textContent = Date.now();
-          document.getElementById('name').textContent = call.name || 'Desconhecido';
-          document.getElementById('number').textContent = call.caller || 'N/A';
-          document.getElementById('extension').textContent = call.extension || 'N/A';
-          showPopup();
-        } else {
-          alert('Nenhuma chamada ativa encontrada.');
-        }
-      } catch (error) {
-        console.error('Erro:', error);
-        alert('Falha ao conectar com a API do Yeastar.');
+      if (call) {
+        document.getElementById('protocol').textContent = generateProtocolNumber();
+        document.getElementById('name').textContent = call.name || 'Desconhecido';
+        document.getElementById('number').textContent = call.caller || 'N/A';
+        document.getElementById('extension').textContent = call.extension || 'N/A';
+        showPopup();
+      } else {
+        alert('Nenhuma chamada ativa encontrada.');
       }
+    } catch (error) {
+      console.error('Erro:', error);
+      alert('Falha ao conectar com a API do Yeastar.');
     }
+  }
 
-    function showPopup() {
-      document.getElementById('callPopup').classList.add('show');
-    }
+  function showPopup() {
+    document.getElementById('callPopup').classList.add('show');
+  }
 
-    function closePopup() {
-      document.getElementById('callPopup').classList.remove('show');
-    }
-  </script>
+  function closePopup() {
+    document.getElementById('callPopup').classList.remove('show');
+  }
+</script>
 </body>
 </html>
