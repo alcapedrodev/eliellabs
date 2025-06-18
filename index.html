@@ -25,24 +25,24 @@
   <h1>Protocolo Gerado</h1>
   <div class="protocol" id="protocol"></div>
 
-<script>
-  function gerarProtocolo(callerNumber) {
-    const agora = new Date();
-    const data = agora.toISOString().slice(0, 10).replace(/-/g, ''); // AAAAMMDD
-    const hora = agora.toTimeString().slice(0, 8).replace(/:/g, ''); // HHMMSS
+  <script>
+    function gerarProtocolo(callerNumber) {
+      const agora = new Date();
+      const data = agora.toISOString().slice(0, 10).replace(/-/g, ''); // AAAAMMDD
+      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, ''); // HHMMSS
 
-    const numeroSemDDD = callerNumber?.slice(-8) || '00000000';
-    const formatado = numeroSemDDD.replace(/(\d{4})(\d{4})/, '$1-$2');
+      const numeroSemDDD = callerNumber?.slice(-8) || '00000000';
+      const formatado = numeroSemDDD.replace(/(\d{4})(\d{4})/, '$1-$2');
 
-    return `${data}-${hora}-${formatado}`;
-  }
+      return `${data}-${hora}-${formatado}`;
+    }
 
-  // Obter parâmetro da URL
-  const params = new URLSearchParams(window.location.search);
-  const caller = params.get('caller');
+    // Obter parâmetro da URL
+    const params = new URLSearchParams(window.location.search);
+    const caller = params.get('caller');
 
-  const protocolo = gerarProtocolo(caller);
-  document.getElementById('protocol').innerText = protocolo;
-</script>
+    const protocolo = gerarProtocolo(caller);
+    document.getElementById('protocol').innerText = protocolo;
+  </script>
 </body>
 </html>
