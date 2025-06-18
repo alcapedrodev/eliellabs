@@ -15,26 +15,43 @@
     }
     .protocol {
       margin-top: 20px;
-      font-size: 24px;
+      font-size: 28px;
       color: #2b7a78;
       font-weight: bold;
+    }
+    .details {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #666;
     }
   </style>
 </head>
 <body>
   <h1>Protocolo Gerado</h1>
   <div class="protocol" id="protocol"></div>
+  <div class="details" id="details"></div>
 
   <script>
-    function gerarProtocolo() {
+    // Função para extrair parâmetros da URL
+    function getParametro(nome) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(nome) || 'desconhecido';
+    }
+
+    function gerarProtocolo(ramal) {
       const agora = new Date();
       const data = agora.toISOString().slice(0, 10).replace(/-/g, '');
       const hora = agora.toTimeString().slice(0, 8).replace(/:/g, '');
-      const aleatorio = Math.floor(1000 + Math.random() * 9000); // 4 dígitos
-      return ${data}-${hora}-${aleatorio};
+      return ${data}-${hora}-${ramal};
     }
 
-    document.getElementById('protocol').innerText = gerarProtocolo();
+    const caller = getParametro('caller');
+    const ext = getParametro('ext');
+
+    const protocolo = gerarProtocolo(ext);
+
+    document.getElementById('protocol').innerText = protocolo;
+    document.getElementById('details').innerText = Origem: ${caller} | Ramal: ${ext};
   </script>
 </body>
 </html>
