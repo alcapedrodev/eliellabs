@@ -87,28 +87,62 @@
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const caller = params.get("caller");
+    const caller = new URLSearchParams(window.location.search).get("caller") || "0000";
 
-    function gerarProtocolo(numero) {
-      const agora = new Date();
-      const data = agora.toISOString().slice(0, 10).replace(/-/g, "");
-      const hora = agora.toTimeString().slice(0, 8).replace(/:/g, "");
-      return `${data}-${hora}-${numero || "0000"}`;
+    async function obterToken() {
+      const res = await fetch("https://alca2cw2.ras.yeastar.com/openapi/oauth2/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          grant_type: "client_credentials",
+          client_id: "8ntM9yA3zo1mUST9qoS48f7romh6aKt",
+          client_secret: "TqG50tx0sPij6p80xklFnvghYholNacA"
+        })
+      });
+      const data = await res.json();
+      return data.access_token;
     }
 
-    const protocolo = gerarProtocolo(caller);
-    document.getElementById("protocolo").textContent = protocolo;
+    async function buscarHoraServidor(token) {
+      const res = await fetch("https://alca2cw2.ras.yeastar.com/openapi/v1.0/device/info", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      return data.data.systemtime; // exemplo: "2025-06-23 10:18:42"
+    }
+
+    async function gerarProtocolo() {
+      try {
+        const token = await obterToken();
+        const hora = await buscarHoraServidor(token);
+        const protocolo = hora.replace(/[-: ]/g, "") + `-${caller}`;
+        document.getElementById("protocolo").textContent = protocolo;
+        window.protocolo = protocolo;
+      } catch (err) {
+        document.getElementById("protocolo").textContent = "Erro ao gerar protocolo.";
+        console.error("Erro ao buscar hora do servidor:", err);
+      }
+    }
+
+    gerarProtocolo();
 
     function copiarProtocolo() {
-      navigator.clipboard.writeText(protocolo).then(() => {
-        const msg = document.getElementById("copiado");
-        msg.style.display = "block";
-        setTimeout(() => {
-          msg.style.display = "none";
-        }, 2000);
-      });
+      if (window.protocolo) {
+        navigator.clipboard.writeText(window.protocolo).then(() => {
+          const msg = document.getElementById("copiado");
+          msg.style.display = "block";
+          setTimeout(() => {
+            msg.style.display = "none";
+          }, 2000);
+        });
+      }
     }
   </script>
 </body>
 </html>
+
