@@ -100,6 +100,27 @@
     const protocolo = gerarProtocolo(caller);
     document.getElementById("protocolo").textContent = protocolo;
 
+    // Notificação do navegador
+    function exibirNotificacao(protocolo) {
+      if (Notification.permission === "granted") {
+        new Notification("Protocolo gerado", {
+          body: protocolo,
+          icon: "https://i.imgur.com/eJ05P5K.png"
+        });
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            new Notification("Protocolo gerado", {
+              body: protocolo,
+              icon: "https://i.imgur.com/eJ05P5K.png"
+            });
+          }
+        });
+      }
+    }
+
+    exibirNotificacao(protocolo);
+
     function copiarProtocolo() {
       navigator.clipboard.writeText(protocolo).then(() => {
         const msg = document.getElementById("copiado");
@@ -112,4 +133,5 @@
   </script>
 </body>
 </html>
+
 
